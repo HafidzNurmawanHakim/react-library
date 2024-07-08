@@ -1,0 +1,30 @@
+import { useEffect } from 'react'
+
+const handleEvent = (e: BeforeUnloadEvent) => {
+    e.preventDefault()
+
+    // This custom message will only be used in older browsers
+    const message = "Your changes may not be saved."
+
+    e.returnValue = message
+    return message
+}
+
+export const useUnloadConfirmation = (shouldPrompt: boolean) => {
+    const eventName = 'beforeunload'
+    useEffect(() => {
+        if (shouldPrompt) {
+            window.addEventListener(eventName, handleEvent)
+            return () => {
+                window.removeEventListener(eventName, handleEvent)
+            }
+        }
+    }, [shouldPrompt])
+}
+
+/* Usage//
+* const { formIsDirty } = FormLibraryOfChoice()
+* useUnloadConfirmation(formIsDirty)
+*
+*/
+
